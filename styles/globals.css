@@ -1,0 +1,23 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+@font-face {
+  font-family: 'ProductSans';
+  src: local('ProductSans'),
+    url('./ProductSans/Product\ Sans\ 400.ttf') format('truetype');
+  font-weight: normal;
+}
+
+
+* {
+  box-sizing: border-box;
+}
