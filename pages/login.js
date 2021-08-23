@@ -7,7 +7,6 @@ import Link from "next/link";
 import { LoginCall } from "./api/apiCalls";
 import Router from "next/router"
 import { DataContext } from "../context/authContext";
-
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -36,6 +35,9 @@ const Container = styled.div`
 `;
 
 function Login(props) {
+
+  
+  
  const email=useRef();
   const password= useRef();
   const {user,isFetching, error, dispatch}= useContext(DataContext);

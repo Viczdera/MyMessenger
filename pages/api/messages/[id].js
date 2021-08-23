@@ -12,7 +12,7 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const message = await Message.findById(id);
+        const message = await Message.find({conversationId:id});
         if (!message) {
           return res.status(500).json({
             success: false,
