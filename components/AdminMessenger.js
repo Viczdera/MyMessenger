@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Conversation from "./Conversation";
 import TheChat from "./TheChat";
 import axios from "axios";
 import Navbar from "./Navbar";
 import { DataContext } from "../context/authContext";
-import { LowPriority } from "@material-ui/icons";
 
 const Messenger = styled.div`
   height: calc(100vh - 70px);
@@ -44,7 +43,20 @@ const Messenger = styled.div`
       display: flex;
       flex-direction: row;
       margin-top: 20px;
+      justify-content: center;
       align-items: center;
+      form {
+        display: flex;
+      }
+      input,
+      .chatButton {
+        padding: 10px;
+        font-size: 12px;
+        margin: 0px 10px 0px 10px;
+      }
+      input {
+        width: 60%;
+      }
 
       .inputText {
         height: 10px;
@@ -56,10 +68,9 @@ const Messenger = styled.div`
       }
       .chatButton {
         background: #ffaf38;
+        cursor: pointer;
         border: none;
         color: #fff;
-        padding: 10px;
-        font-size: 12px;
       }
     }
   }
@@ -88,9 +99,13 @@ function AdminMessenger(props) {
   const { user } = useContext(DataContext);
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
-  //loading 
-  const [loading, setLoading] = useState([]);
+  //loading
+  const [loading, setLoading] = useState(true);
+  //messafe and new message
   const [message, setMessage] = useState([]);
+  const [newMessages, setNewMessages] = useState();
+
+  const scrollRefCurrentM = useRef();
 
   useEffect(async () => {
     try {
@@ -112,11 +127,9 @@ function AdminMessenger(props) {
     const getmessages = async () => {
       try {
         const res = await axios.get(route + "messages/" + activeChat?._id);
-       //console.log(res.data.data)
+        //console.log(res.data.data)
         setMessage(res.data.data);
         setLoading(false);
-
-
       } catch (err) {
         console.log(err);
       }
@@ -124,7 +137,41 @@ function AdminMessenger(props) {
     getmessages();
   }, [activeChat]);
 
- console.log(message)
+  const isloading = () => {
+    console.log("loading...");
+  };
+
+  console.log(message);
+
+  //new messages
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const newMessage = {
+      conversationId: activeChat._id,
+      sender: user.data._id,
+      text: newMessages,
+    };
+
+    if (newMessages !== "") {
+      try {
+        const res = await axios.post(route + "messages", newMessage);
+        //add to the messages
+        setNewMessages([...message, res.data.data]);
+        //empty textbox after
+        setNewMessages("");
+
+        console.log(newMessages);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  //scroll ref
+  useEffect(() => {
+    scrollRefCurrentM.current?.scrollIntoView();
+  }, [message]);
 
   return (
     <>
@@ -136,8 +183,9 @@ function AdminMessenger(props) {
               <div
                 className={onclick ? "convoBtnClicked" : "convoBtn"}
                 onClick={() => {
+                  setLoading(true);
                   setActiveChat(c);
-                  setLoading(true)
+                  // message?setLoading(false):""
                 }}
               >
                 <Conversation convo={c} currentUser={user.data} />
@@ -158,7 +206,12 @@ function AdminMessenger(props) {
                     <>
                       {message.map((m) => {
                         return (
-                          <TheChat chat={m} mine={m.sender === user.data._id} />
+                          <div ref={scrollRefCurrentM}>
+                            <TheChat
+                              chat={m}
+                              mine={m.sender === user.data._id}
+                            />
+                          </div>
                         );
                       })}
                     </>
@@ -170,11 +223,19 @@ function AdminMessenger(props) {
             )}
           </div>
           <div className="chatboxBottom">
-            <textarea
-              className="inputText"
-              placeholder="type messages"
-            ></textarea>
-            <button className="chatButton">SEND MESSAGE</button>
+            <form>
+              <input
+                type="text"
+                onChange={(e) => {
+                  setNewMessages(e.target.value);
+                }}
+                value={newMessages}
+                required={true}
+              ></input>
+              <button onClick={handleClick} className="chatButton">
+                SEND MESSAGE
+              </button>
+            </form>
           </div>
         </div>
       </Messenger>
