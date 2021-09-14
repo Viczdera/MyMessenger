@@ -12,6 +12,9 @@ const ContactDiv = styled.div`
   padding: 10px;
   margin-top: 20px;
   cursor: pointer;
+  color: #fff;
+  
+  background-color: #000;
   :hover {
     color: #320234;
     background-color: #fff;

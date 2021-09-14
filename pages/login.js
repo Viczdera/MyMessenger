@@ -7,6 +7,8 @@ import Link from "next/link";
 import { LoginCall } from "./api/apiCalls";
 import Router from "next/router"
 import { DataContext } from "../context/authContext";
+
+
 const Container = styled.div`
   display: flex;
   align-items: center;

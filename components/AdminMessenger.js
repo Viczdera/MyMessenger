@@ -4,24 +4,28 @@ import Conversation from "./Conversation";
 import TheChat from "./TheChat";
 import axios from "axios";
 import Navbar from "./Navbar";
+import { useMediaQuery } from "@material-ui/core";
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SubMenu,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "react-pro-sidebar";
+import Switch from "react-switch";
 import { DataContext } from "../context/authContext";
+import { Check } from "@material-ui/icons";
 
 const Messenger = styled.div`
-  height: calc(100vh - 70px);
+  height: calc(100vh - 60px);
+  width: 100%;
   display: flex;
-
-  .menu {
-    background-color: #320234;
-    color: #fff;
-    width: 30%;
-    min-width: 118px;
-    .convoBtnClicked {
-      background: white;
-    }
-  }
+  overflow-x: scroll;
   .chatbox {
     background-color: #fff;
-    width: 70%;
+    width: 100%;
     padding: 5px;
     padding-bottom: 20px;
 
@@ -95,7 +99,7 @@ const Messenger = styled.div`
 `;
 export const route = "api/";
 
-function AdminMessenger(props) {
+function AdminMessenger() {
   const { user } = useContext(DataContext);
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
@@ -104,6 +108,8 @@ function AdminMessenger(props) {
   //messafe and new message
   const [message, setMessage] = useState([]);
   const [newMessages, setNewMessages] = useState();
+  //
+  const [collapsed, setCollapsed] = useState(true);
 
   const scrollRefCurrentM = useRef();
 
@@ -173,26 +179,97 @@ function AdminMessenger(props) {
     scrollRefCurrentM.current?.scrollIntoView();
   }, [message]);
 
+  const handleCollapsed = (checked) => {
+    setCollapsed(checked);
+  };
+
+  const mediaq = useMediaQuery("(max-width:600px");
+
   return (
     <>
       <Navbar />
+
       <Messenger>
-        <div className="menu">
-          {conversations.map((c) => {
-            return (
-              <div
-                className={onclick ? "convoBtnClicked" : "convoBtn"}
-                onClick={() => {
-                  setLoading(true);
-                  setActiveChat(c);
-                  // message?setLoading(false):""
-                }}
-              >
-                <Conversation convo={c} currentUser={user.data} />
-              </div>
-            );
-          })}
-        </div>
+        <ProSidebar
+          className="Prosidebar"
+          collapsed={mediaq ? collapsed : !collapsed}
+          width={mediaq ? "200px" : "250px"}
+          collapsedWidth={mediaq ? "80px" : "100px"}
+        >
+          <Menu iconShape="square">
+            <SidebarHeader>Chats</SidebarHeader>
+            <MenuItem>search</MenuItem>
+            <SubMenu>
+              <MenuItem>Component 1</MenuItem>
+              <MenuItem>Component 2</MenuItem>
+            </SubMenu>
+
+            <SidebarContent>
+              {conversations.map((c) => {
+                return (
+                  <div
+                    className={onclick ? "convoBtnClicked" : "convoBtn"}
+                    onClick={() => {
+                      setLoading(true);
+                      setActiveChat(c);
+                      // message?setLoading(false):""
+                    }}
+                  >
+                    <Conversation convo={c} currentUser={user.data} />
+                  </div>
+                );
+              })}
+            </SidebarContent>
+
+            <SidebarFooter>
+              {/*   <div > <Switch type="checkbox" checked={collapsed} onChange={handleCollapsed}/>
+                {mediaq?"collapsed":"expand"}
+              </div>*/}
+              {mediaq ? (
+                <>
+                  {collapsed ? (
+                    <button
+                      onClick={() => {
+                        setCollapsed(false);
+                      }}
+                    >
+                      exp
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setCollapsed(true);
+                      }}
+                    >
+                      collape
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  {collapsed ? (
+                    <button
+                      onClick={() => {
+                        setCollapsed(false);
+                      }}
+                    >
+                      collape
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setCollapsed(true);
+                      }}
+                    >
+                      exp
+                    </button>
+                  )}
+                </>
+              )}
+            </SidebarFooter>
+          </Menu>
+        </ProSidebar>
         <div className="chatbox">
           <div className="chatboxTop">
             {activeChat ? (
@@ -238,6 +315,35 @@ function AdminMessenger(props) {
             </form>
           </div>
         </div>
+
+        {/*<div className="menu">
+          {conversations.map((c) => {
+            return (
+              <div
+                className={onclick ? "convoBtnClicked" : "convoBtn"}
+                onClick={() => {
+                  setLoading(true);
+                  setActiveChat(c);
+                  // message?setLoading(false):""
+                }}
+              >
+                <Conversation convo={c} currentUser={user.data} />
+              </div>
+            );
+          })}
+        </div>
+        
+        
+        
+
+
+
+
+
+        
+        
+        
+        */}
       </Messenger>
     </>
   );
