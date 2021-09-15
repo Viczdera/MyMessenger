@@ -5,6 +5,7 @@ import TheChat from "./TheChat";
 import axios from "axios";
 import Navbar from "./Navbar";
 import { DataContext } from "../context/authContext";
+import { io, so } from "socket.io-client";
 
 const Messenger = styled.div`
   height: calc(100vh - 70px);
@@ -95,7 +96,7 @@ const Messenger = styled.div`
 `;
 export const route = "api/";
 
-function AdminMessenger(props) {
+function AdminMessenger() {
   const { user } = useContext(DataContext);
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
@@ -104,6 +105,9 @@ function AdminMessenger(props) {
   //messafe and new message
   const [message, setMessage] = useState([]);
   const [newMessages, setNewMessages] = useState();
+  //sockets
+  const socket = useRef();
+  const [RTMessage, setRTMessage] = useState(null);
 
   const scrollRefCurrentM = useRef();
 
@@ -137,23 +141,32 @@ function AdminMessenger(props) {
     getmessages();
   }, [activeChat]);
 
-  const isloading = () => {
-    console.log("loading...");
-  };
-
-  console.log(message);
+  //console.log(message);
+  //console.log(activeChat)
 
   //new messages
 
-  const handleClick = async (e) => {
+  const submitMessage = async (e) => {
     e.preventDefault();
     const newMessage = {
       conversationId: activeChat._id,
       sender: user.data._id,
       text: newMessages,
     };
+    //filter receiver id
+    const receiverId = activeChat.members.find(
+      (member) => member !== user.data._id
+    );
+    console.log(receiverId);
+
 
     if (newMessages !== "") {
+      
+    socket.current.emit("sendMessage", {
+      senderId: user.data._id,
+      receiverId,
+      text: newMessages,
+    });
       try {
         const res = await axios.post(route + "messages", newMessage);
         //add to the messages
@@ -167,6 +180,31 @@ function AdminMessenger(props) {
       }
     }
   };
+  //socket
+  useEffect(() => {
+    socket.current = io("ws://localhost:8000");
+    socket.current.on("getMessage",  d => {
+      setRTMessage({
+        sender: d.senderId,
+        text: d.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit("addUser", user.data._id);
+    socket.current.on("getUsers", (users) => {
+      console.log(users);
+    });
+  }, [user]); //user can change
+
+  //update new real time message
+  useEffect(() => {
+    RTMessage &&
+      activeChat?.members.includes(RTMessage.sender) &&
+      setMessage((previousC ) => [...previousC, RTMessage]);
+  }, [RTMessage, activeChat]);
 
   //scroll ref
   useEffect(() => {
@@ -232,7 +270,7 @@ function AdminMessenger(props) {
                 value={newMessages}
                 required={true}
               ></input>
-              <button onClick={handleClick} className="chatButton">
+              <button onClick={submitMessage} className="chatButton">
                 SEND MESSAGE
               </button>
             </form>
