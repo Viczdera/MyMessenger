@@ -36,7 +36,7 @@ const Container = styled.div`
   }
 `;
 
-function Login() {
+const Login=()=> {
   const email = useRef();
   const password = useRef();
   const { user, isFetching, error, dispatch } = useContext(DataContext);
