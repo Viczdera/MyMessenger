@@ -56,7 +56,7 @@ function Conversation({ convo, currentUser }) {
         <FontAwesomeIcon style={{ margin: " 0 auto" }} icon={faUser} />
       </div>
 
-      <span className="convoName">
+      <span className="convoName" key={convo._id}>
         {convo ? `${user ? `${user.name}` : "....."}` : ""}
       </span>
     </ContactDiv>

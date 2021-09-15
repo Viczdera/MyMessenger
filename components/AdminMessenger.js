@@ -215,7 +215,7 @@ function AdminMessenger() {
                       // message?setLoading(false):""
                     }}
                   >
-                    <Conversation key={c._id}
+                    <Conversation
                      convo={c} currentUser={user.data} />
                   </div>
                 );
@@ -285,7 +285,7 @@ function AdminMessenger() {
                       {message.map((m) => {
                         return (
                           <div ref={scrollRefCurrentM}>
-                            <TheChat key={m._id}
+                            <TheChat 
                               chat={m}
                               mine={m.sender === user.data._id}
                             />

@@ -62,11 +62,11 @@ function TheChat({ chat , mine }) {
   return (
     <Chatcontainer>
       <div className={mine ? "myMessageCont" : "friendMessageCont"}>
-        <div className={mine ? "myText" : "friendText"}>
+        <div key={chat._id} className={mine ? "myText" : "friendText"}>
          {chat.text}
         </div>
         <div className={mine ? "myTimestamp":"friendTimestamp"}>
-          <span>{format(chat.createdAt)}</span>
+          <span key={chat._id}>{format(chat.createdAt)}</span>
         </div>
       </div>
     </Chatcontainer>
