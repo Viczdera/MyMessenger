@@ -8,6 +8,7 @@ import { LoginCall } from "./api/apiCalls";
 import Router from "next/router";
 import { DataContext } from "../context/authContext";
 
+
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -36,10 +37,13 @@ const Container = styled.div`
   }
 `;
 
-const Login=()=> {
-  const email = useRef();
-  const password = useRef();
-  const { user, isFetching, error, dispatch } = useContext(DataContext);
+function Login(props) {
+
+  
+  
+ const email=useRef();
+  const password= useRef();
+  const {user,isFetching, error, dispatch}= useContext(DataContext);
 
   const clicked = (e) => {
     e.preventDefault();

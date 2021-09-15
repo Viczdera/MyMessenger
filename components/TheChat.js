@@ -1,37 +1,51 @@
 import React from "react";
-
+import {format} from "timeago.js"
 import styled from "styled-components";
 
 const Chatcontainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  .normal {
-    flex-direction: row;
-  }
-  .myMessage {
-    flex-direction: row-reverse;
-  }
-  .myMessage,
-  .normal {
-    margin-top: 20px;
+  
+  .myMessageCont,.friendMessageCont{
     display: flex;
     align-items: center;
+    margin: 40px 0px 0px 40px;
+    width: 100%;
   }
-  .messageText {
-    margin-right: 10px;
-  }
-  .myText {
-    margin-left: 10px;
-  }
-  .messageText,
-  .myText {
-    width: 70%;
-  }
-  .timestamp {
+  .myMessageCont{
     display: flex;
-    justify-content: center;
-    width: 30%;
+    flex-direction: row-reverse;
+    .myText{
+      
+    }
+    .myTimestamp{
+      display: flex;
+      align-items: flex-end;
+      justify-content: end;
+      ;
+    }
+  }
+  .friendMessageCont{
+    display: flex;
+    flex-direction: row;
+    align-items:flex-start;
+    .friendTimestamp{
+      display: flex;
+      align-self: center;
+      
+    justify-content: start;
+      
+      ;
+    }     
+  }
+  .friendText,
+  .myText {
+    width: 250px;
+  }
+  .myTimestamp,.friendTimestamp {
+    display: flex;
+    width: 100px;
     height: fit-content;
     
     span{
@@ -44,16 +58,15 @@ const Chatcontainer = styled.div`
     
   }
 `;
-function TheChat({ mine }) {
+function TheChat({ chat , mine }) {
   return (
     <Chatcontainer>
-      <div className={mine ? "myMessage" : "normal"}>
-        <div className={mine ? "myText" : "messageText"}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vel sagittis
-          elementum turpis eleifend pharetra, arcu, tempor in.
+      <div className={mine ? "myMessageCont" : "friendMessageCont"}>
+        <div className={mine ? "myText" : "friendText"}>
+         {chat.text}
         </div>
-        <div className="timestamp">
-          <span>02/01/21    08:35pm</span>
+        <div className={mine ? "myTimestamp":"friendTimestamp"}>
+          <span>{format(chat.createdAt)}</span>
         </div>
       </div>
     </Chatcontainer>
