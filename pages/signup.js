@@ -35,7 +35,7 @@ const Container = styled.div`
   }
 `;
 
-function login(props) {
+const login=()=> {
   const name= useRef()
   const email= useRef();
   const password=useRef();
