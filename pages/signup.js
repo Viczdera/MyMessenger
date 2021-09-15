@@ -36,21 +36,21 @@ const Container = styled.div`
 `;
 
 const login=()=> {
-  const name= useRef()
-  const email= useRef();
-  const password=useRef();
-  const cfPassword=useRef();
+  const Name= useRef()
+  const Email= useRef();
+  const Password=useRef();
+  const CfPassword=useRef();
 
   const clicked = (e) => {
     e.preventDefault();
-    if(cfPassword.current.value===password.current.value){
+    if(CfPassword.current.value===Password.current.value){
 
-      Signupcall({name:name.current.value, email: email.current.value, password:password.current.value})
+      Signupcall({name:Name.current.value, email: Email.current.value, password:Password.current.value})
       Router.push("/login")
 
     }else{
 
-      cfPassword.current.setCustomValidity("Password does not match")
+      CfPassword.current.setCustomValidity("Password does not match")
 
     }
   };
@@ -61,23 +61,23 @@ const login=()=> {
         <form>
           <Image src={appIcon} alt="appicon" width="100px" height="100px" />
           <h3>SIGNUP</h3>
-          <input placeholder="Enter your name" ref={name} required />
+          <input placeholder="Enter your name" ref={Name} required />
           <input
             placeholder="Enter your email"
-            ref={email}
+            ref={Email}
             type="email"
             required
           />
           <input
             placeholder="Enter your password"
-            ref={password}
+            ref={Password}
             required
             minLength="8"
             type="password"
           />
           <input
             placeholder="Re-enter password"
-            ref={cfPassword}
+            ref={CfPassword}
             required
             type="password"
           />

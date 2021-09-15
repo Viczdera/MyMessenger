@@ -72,7 +72,7 @@ function Login(props) {
           <button onClick={clicked}>{isFetching ? "Loading" : "LogIn"}</button>
 
           <h6>
-            Don't have an account?
+           {" Don't have an account?"}
             <Link href="/signup">
               <a>Signup</a>
             </Link>
