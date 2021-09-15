@@ -35,7 +35,7 @@ const Container = styled.div`
   }
 `;
 
-const login=()=> {
+const SignUp=()=> {
   const Name= useRef()
   const Email= useRef();
   const Password=useRef();
@@ -94,4 +94,4 @@ const login=()=> {
   );
 }
 
-export default login;
+export default SignUp;
