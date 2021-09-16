@@ -1,35 +1,32 @@
-$sidebar-bg-color: #ffffff;
-@import '~react-pro-sidebar/dist/scss/styles.scss';
 
-.pro-sidebar-layout{
-    background: #fff url("../assets/abstract-timekeeper\ \(2\).svg");
-    background-repeat: no-repeat;
-    background-size:cover ;
-    z-index: 1;
-    overflow-y: auto;
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 5px grey;
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #320234;
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 0, 0, 0.38);
-    }
+@import "~react-pro-sidebar/dist/scss/styles.scss";
+
+.pro-sidebar-layout {
+  background: rgb(255, 255, 255);
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #320234;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.38);
+  }
 }
-.pro-menu-item{
-    color:#247c57;
+.pro-menu-item {
+  color: #247c57;
 }
-.pro-sidebar-content{
+.pro-sidebar-content {
+  background: linear-gradient(90deg,  #247c57 -1.39%, rgba(0, 0, 0, 0) 500.56%), url("../assets/bkg7.jpg");
   background-repeat: no-repeat;
-  background-size:cover ;
-    height: 70vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-
+  background-size: cover;
+  height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

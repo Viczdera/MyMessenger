@@ -6,17 +6,16 @@ import axios from "axios";
 import Navbar from "./Navbar";
 import { useMediaQuery } from "@material-ui/core";
 import {
-  ProSidebar,
   Menu,
   MenuItem,
   SubMenu,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  ProSidebar,
 } from "react-pro-sidebar";
-import Switch from "react-switch";
 import { DataContext } from "../context/authContext";
-import { Check } from "@material-ui/icons";
+import { io} from "socket.io-client";
 
 const Messenger = styled.div`
   height: calc(100vh - 60px);
@@ -24,7 +23,7 @@ const Messenger = styled.div`
   display: flex;
   overflow-x: scroll;
   .chatbox {
-    background-color: #fff;
+    background: url('../assets/bkg1.svg');
     width: 100%;
     padding: 5px;
     padding-bottom: 20px;
@@ -37,6 +36,7 @@ const Messenger = styled.div`
       box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
       padding: 20px;
       padding-bottom: 10px;
+      
       .openChat {
         text-align: center;
         color: #ffaf38;
@@ -103,15 +103,19 @@ function AdminMessenger() {
   const { user } = useContext(DataContext);
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
+
   //loading
   const [loading, setLoading] = useState(true);
   //messafe and new message
   const [message, setMessage] = useState([]);
   const [newMessages, setNewMessages] = useState();
-  //
-  const [collapsed, setCollapsed] = useState(true);
+  //sockets
+  const socket = useRef();
+  const [RTMessage, setRTMessage] = useState(null);
 
   const scrollRefCurrentM = useRef();
+
+  const [collapsed, setCollapsed] = useState(true);
 
   useEffect(async () => {
     try {
@@ -143,23 +147,32 @@ function AdminMessenger() {
     getmessages();
   }, [activeChat]);
 
-  const isloading = () => {
-    console.log("loading...");
-  };
-
-  console.log(message);
+  //console.log(message);
+  //console.log(activeChat)
 
   //new messages
 
-  const handleClick = async (e) => {
+  const submitMessage = async (e) => {
     e.preventDefault();
     const newMessage = {
       conversationId: activeChat._id,
       sender: user.data._id,
       text: newMessages,
     };
+    //filter receiver id
+    const receiverId = activeChat.members.find(
+      (member) => member !== user.data._id
+    );
+    console.log(receiverId);
+
 
     if (newMessages !== "") {
+      
+    socket.current.emit("sendMessage", {
+      senderId: user.data._id,
+      receiverId,
+      text: newMessages,
+    });
       try {
         const res = await axios.post(route + "messages", newMessage);
         //add to the messages
@@ -173,15 +186,36 @@ function AdminMessenger() {
       }
     }
   };
+  //socket
+  useEffect(() => {
+    socket.current = io("ws://localhost:8000");
+    socket.current.on("getMessage",  d => {
+      setRTMessage({
+        sender: d.senderId,
+        text: d.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit("addUser", user.data._id);
+    socket.current.on("getUsers", (users) => {
+      console.log(users);
+    });
+  }, [user]); //user can change
+
+  //update new real time message
+  useEffect(() => {
+    RTMessage &&
+      activeChat?.members.includes(RTMessage.sender) &&
+      setMessage((previousC ) => [...previousC, RTMessage]);
+  }, [RTMessage, activeChat]);
 
   //scroll ref
   useEffect(() => {
     scrollRefCurrentM.current?.scrollIntoView();
   }, [message]);
-
-  const handleCollapsed = (checked) => {
-    setCollapsed(checked);
-  };
 
   const mediaq = useMediaQuery("(max-width:600px");
 
@@ -311,7 +345,7 @@ function AdminMessenger() {
                 value={newMessages}
                 required={true}
               ></input>
-              <button onClick={handleClick} className="chatButton">
+              <button onClick={submitMessage} className="chatButton">
                 SEND MESSAGE
               </button>
             </form>
