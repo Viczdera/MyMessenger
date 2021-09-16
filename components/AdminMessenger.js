@@ -188,7 +188,7 @@ function AdminMessenger() {
   };
   //socket
   useEffect(() => {
-    socket.current = io("ws://localhost:8000");
+    socket.current = io("https://quiet-cove-52851.herokuapp.com/");
     socket.current.on("getMessage",  d => {
       setRTMessage({
         sender: d.senderId,
