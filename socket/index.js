@@ -1,5 +1,5 @@
-
-const io = require("socket.io")(8000, {
+const port= process.env.PORT||8000
+const io = require("socket.io")(port, {
   cors: {
     origin: "http://localhost:3000",
   },
@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage",({senderId,receiverId, text})=>{
       const user= getSpecificUser(receiverId);
-      io.to(user?.socketId).emit("getMessage",{
+      io.to(user.socketId).emit("getMessage",{
           senderId,
           text
       })
