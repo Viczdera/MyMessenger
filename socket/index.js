@@ -1,7 +1,7 @@
 const port= process.env.PORT||8000
 const io = require("socket.io")(port, {
   cors: {
-    origin: "https://my-messenger-zeta.vercel.app/",
+    origin: "https://my-messenger-viczdera.vercel.app/",
   },
 });
 
