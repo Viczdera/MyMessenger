@@ -3,7 +3,8 @@ import styled from "styled-components";
 import Conversation from "./Conversation";
 import TheChat from "./TheChat";
 import axios from "axios";
-import Navbar from "./Navbar";
+import Image from "next/image";
+import Link from "next/link";
 import { useMediaQuery } from "@material-ui/core";
 import {
   Menu,
@@ -15,28 +16,46 @@ import {
   ProSidebar,
 } from "react-pro-sidebar";
 import { DataContext } from "../context/authContext";
-import { io} from "socket.io-client";
+import { io } from "socket.io-client";
+
+import appicon1 from "../public/appicon1.svg";
+import { Add, Cancel } from "@material-ui/icons";
+
+const ChatBoxNav = styled.div`
+  height: 8%;
+  width: 100%;
+  border-radius: 10px;
+  background: #589cafff;
+`;
 
 const Messenger = styled.div`
-  height: calc(100vh - 60px);
+  height: 100vh;
+  max-height: 100vh;
   width: 100%;
   display: flex;
   overflow-x: scroll;
+  button {
+    border: 0px;
+    cursor: pointer;
+  }
   .chatbox {
-    background: url('../assets/bkg1.svg');
+    background: url("../assets/bkg1.svg");
     width: 100%;
     padding: 5px;
+
     padding-bottom: 20px;
 
     .chatboxTop {
-      height: 90%;
+      margin-top: 10px;
+      height: 85%;
       display: flex;
       flex-direction: column;
       min-width: 202px;
       box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
       padding: 20px;
       padding-bottom: 10px;
-      
+      border-radius: 10px;
+
       .openChat {
         text-align: center;
         color: #ffaf38;
@@ -46,7 +65,6 @@ const Messenger = styled.div`
     .chatboxBottom {
       display: flex;
       flex-direction: row;
-      margin-top: 20px;
       justify-content: center;
       align-items: center;
       form {
@@ -78,8 +96,8 @@ const Messenger = styled.div`
       }
     }
   }
-  .menu,
   .chatboxTop {
+    overflow-x: hidden;
     overflow-y: auto;
     ::-webkit-scrollbar {
       width: 5px;
@@ -104,6 +122,9 @@ function AdminMessenger() {
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
 
+  //add new friend
+  const [addNew, setAddNew] = useState(false);
+
   //loading
   const [loading, setLoading] = useState(true);
   //messafe and new message
@@ -127,7 +148,7 @@ function AdminMessenger() {
     } catch (err) {
       console.log(err);
     }
-  }, [user.data._id]);
+  }, [user?.data._id]);
 
   //active chat
   // console.log(activeChat);
@@ -165,14 +186,12 @@ function AdminMessenger() {
     );
     console.log(receiverId);
 
-
     if (newMessages !== "") {
-      
-    socket.current.emit("sendMessage", {
-      senderId: user.data._id,
-      receiverId,
-      text: newMessages,
-    });
+      socket.current.emit("sendMessage", {
+        senderId: user.data._id,
+        receiverId,
+        text: newMessages,
+      });
       try {
         const res = await axios.post(route + "messages", newMessage);
         //add to the messages
@@ -189,7 +208,7 @@ function AdminMessenger() {
   //socket
   useEffect(() => {
     socket.current = io("https://quiet-cove-52851.herokuapp.com/");
-    socket.current.on("getMessage",  d => {
+    socket.current.on("getMessage", (d) => {
       setRTMessage({
         sender: d.senderId,
         text: d.text,
@@ -199,7 +218,7 @@ function AdminMessenger() {
   }, []);
 
   useEffect(() => {
-    socket.current.emit("addUser", user.data._id);
+    socket.current.emit("addUser", user?.data._id);
     socket.current.on("getUsers", (users) => {
       console.log(users);
     });
@@ -209,7 +228,7 @@ function AdminMessenger() {
   useEffect(() => {
     RTMessage &&
       activeChat?.members.includes(RTMessage.sender) &&
-      setMessage((previousC ) => [...previousC, RTMessage]);
+      setMessage((previousC) => [...previousC, RTMessage]);
   }, [RTMessage, activeChat]);
 
   //scroll ref
@@ -217,26 +236,91 @@ function AdminMessenger() {
     scrollRefCurrentM.current?.scrollIntoView();
   }, [message]);
 
-  const mediaq = useMediaQuery("(max-width:600px");
+  const mediaq = useMediaQuery("(max-width:700px");
+
+  console.log(addNew);
 
   return (
     <>
-      <Navbar />
-
       <Messenger>
-        <ProSidebar
-          className="Prosidebar"
-          collapsed={mediaq ? collapsed : !collapsed}
-          width={mediaq ? "200px" : "250px"}
-          collapsedWidth={mediaq ? "80px" : "100px"}
-        >
-          <Menu iconShape="square">
-            <SidebarHeader>Chats</SidebarHeader>
-            <MenuItem>search</MenuItem>
-            <SubMenu>
-              <MenuItem>Component 1</MenuItem>
-              <MenuItem>Component 2</MenuItem>
-            </SubMenu>
+        <div className="sideMenu">
+          <ProSidebar
+            className="Prosidebar"
+            collapsed={mediaq ? collapsed : !collapsed}
+            width={mediaq ? "250px" : "300px"}
+            collapsedWidth={mediaq ? "80px" : "100px"}
+          >
+            <SidebarHeader>
+              <span style={{ minWidth: "30px" }}>
+                <Image
+                  src={appicon1}
+                  alt="appicon"
+                  width="30px"
+                  height="30px"
+                />
+              </span>
+              {mediaq ? (
+                <>
+                  {" "}
+                  {collapsed ? (
+                    ""
+                  ) : (
+                    <Link href="/">
+                      <a style={{ fontSize: "20px" }} className="logolink">
+                        NeXtChat
+                      </a>
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  {" "}
+                  {collapsed ? (
+                    <Link href="/">
+                      <a style={{ fontSize: "20px" }} className="logolink">
+                        NeXtChat
+                      </a>
+                    </Link>
+                  ) : (
+                    ""
+                  )}
+                </>
+              )}
+            </SidebarHeader>
+            <Menu>
+              <div className={addNew ? "showform" : "hideform"}>
+                <div className="addUserDiv">
+                  Hello, {user.data.name}
+                  {addNew ? (
+                    <button
+                      onClick={() => {
+                        setAddNew(false);
+                      }}
+                      style={{ background: "none" }}
+                    >
+                      <Cancel />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setAddNew(true);
+                      }}
+                      style={{ background: "none" }}
+                    >
+                      <Add />
+                    </button>
+                  )}
+                </div>
+                {addNew ? (
+                  <form>
+                    <input placeholder="enter contact's email" />
+                    <button>Add</button>
+                  </form>
+                ) : (
+                  ""
+                )}
+              </div>
+            </Menu>
 
             <SidebarContent>
               {conversations.map((c) => {
@@ -251,7 +335,11 @@ function AdminMessenger() {
                     key={c._id}
                   >
                     <Conversation
-                     convo={c} currentUser={user.data} />
+                      convo={c}
+                      currentUser={user.data}
+                      collapsed={collapsed}
+                      mediaq={mediaq}
+                    />
                   </div>
                 );
               })}
@@ -304,9 +392,12 @@ function AdminMessenger() {
                 </>
               )}
             </SidebarFooter>
-          </Menu>
-        </ProSidebar>
+          </ProSidebar>
+        </div>
+
         <div className="chatbox">
+          <ChatBoxNav />
+
           <div className="chatboxTop">
             {activeChat ? (
               loading ? (
@@ -320,7 +411,7 @@ function AdminMessenger() {
                       {message.map((m) => {
                         return (
                           <div ref={scrollRefCurrentM} key={m._id}>
-                            <TheChat 
+                            <TheChat
                               chat={m}
                               mine={m.sender === user.data._id}
                             />

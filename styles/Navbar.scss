@@ -1,0 +1,84 @@
+.mheader {
+    padding: 10px 10px 10px 20px;
+    height: 60px;
+    display: flex;
+    align-items: center; 
+    position: sticky;
+    top: 0;
+    z-index: 100; /*always above all components*/
+    background-color:  #050714;
+    border-bottom: 2px solid #fff;
+    //4f2a20ff
+    //f8f8f8ff
+    //cdcdcdff
+  }
+  .logolink {
+    color: #fff;
+    margin: 0px 0px;
+  }
+  .headerLogo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain; /*keeps aspect ratio */
+    margin: 0 20px;
+    margin-top: 10px;
+   // background: #eba845;
+  }
+  .hLink {
+    width: fit-content;
+    height: fit-content;
+    color: rgb(226, 138, 79);
+  }
+  .hOLineone,
+  .hOLinetwo {
+    color: white;
+  }
+  .mheaderSearch {
+    display: flex;
+    flex: 1; /*stretching the search box*/
+    border: solid grey;
+
+    border-radius: 20px;
+  }
+  .headerSearchinput {
+    width: 100%;
+    background: grey;
+  }
+  .headerSearchIcon {
+    color: #000;
+    height: 20px;
+    background-color: white;
+  }
+
+  .mheaderNav {
+    display: flex;
+    margin-left: 5%;
+    margin-right: 2%;
+  }
+  .mheaderOption {
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    flex-direction: column;
+  }
+  .hOLineone {
+    font-size: 10px;
+  }
+  .hOLinetwo {
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .headerOptionbasket {
+    display: flex;
+    align-items: center;
+    background-color: rgb(226, 79, 79);
+    color: #fff;
+    margin-right: 10px;
+    padding: 4px;
+  }
+  .headerShoppingbasket {
+    color: #fff;
+    height: 30px;
+    align-items: center;
+  }
