@@ -19,7 +19,7 @@ import { DataContext } from "../context/authContext";
 import { io } from "socket.io-client";
 
 import appicon1 from "../public/appicon1.svg";
-import { Add, Cancel } from "@material-ui/icons";
+import { Add, Cancel, Send } from "@material-ui/icons";
 
 const ChatBoxNav = styled.div`
   height: 8%;
@@ -69,15 +69,19 @@ const Messenger = styled.div`
       align-items: center;
       form {
         display: flex;
+        width: 100%;
+        height: 40px;
+        margin-top: 12px;
       }
       input,
       .chatButton {
         padding: 10px;
         font-size: 12px;
-        margin: 0px 10px 0px 10px;
+        margin: 0px 10px 0px 0px;
       }
       input {
-        width: 60%;
+        width: 100%;
+        border-radius:10px;
       }
 
       .inputText {
@@ -89,10 +93,12 @@ const Messenger = styled.div`
         padding: 10px;
       }
       .chatButton {
-        background: #ffaf38;
+        background: #050714;
         cursor: pointer;
         border: none;
         color: #fff;
+        display: flex;
+        align-items: center;
       }
     }
   }
@@ -437,7 +443,7 @@ function AdminMessenger() {
                 required={true}
               ></input>
               <button onClick={submitMessage} className="chatButton">
-                SEND MESSAGE
+                <Send/>
               </button>
             </form>
           </div>
