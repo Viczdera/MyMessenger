@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { DataContext } from "../context/authContext";
 import { route } from "./AdminMessenger";
 import Image from "next/image";
+import { Avatar } from "@material-ui/core";
 
 const ContactDiv = styled.div`
   padding-left: 10px;
@@ -27,12 +28,13 @@ const ContactDiv = styled.div`
 
   .userPic {
     min-width: 40px;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border: solid;
     border-radius: 50%;
     display: flex;
     align-items: center;
+    justify-content: center;
     margin-right: 4px;
     margin-left: 10px;
   }
@@ -74,14 +76,7 @@ function Conversation({ convo, currentUser, collapsed, mediaq, onlineUsers }) {
     }
   }, [convo, currentUser]);
 
-  useEffect(()=>{
-    onlineUsers.map((o)=>{
-      if(o.userId===user?._id){
-        setonline(true)
-      }
-    })
-
-  },[])
+ 
 
 
 
@@ -89,16 +84,11 @@ function Conversation({ convo, currentUser, collapsed, mediaq, onlineUsers }) {
     <ContactDiv>
       <div className="wrapper">
         <div className="userPic">
-          <img
-            src={`${user?.profpicture}`}
-            width="30px"
-            height="30px"
-            style={{ margin: "0 auto", borderRadius: "15px" }}
-          />
+          <Avatar/>
         </div>
-        <div
+      {/*<div
           className={online? "online" : "offline"}
-        />
+        /> */}  
         {mediaq ? (
           <>
             {" "}

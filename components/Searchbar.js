@@ -89,7 +89,7 @@ function Searchbar({ convo }) {
                 }
               })
               .map((u) => {
-                return <option value={u.name} />;
+                return <option key={u._id} value={u.name} />;
               })}
           </datalist>
         </div>
