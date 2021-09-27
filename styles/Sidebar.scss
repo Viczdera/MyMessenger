@@ -122,6 +122,9 @@
 }
 
 .pro-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   background: #f8f8f8ff;
   height: 150px;
   //border-bottom: 2px solid #c58b34;

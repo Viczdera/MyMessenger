@@ -12,6 +12,10 @@ const UserSchema=  new mongoose.Schema({
         required: true,
         min:6
     },
+    profpicture:{
+        type:String,
+        default:"https://res.cloudinary.com/db9dt41gx/image/upload/v1632610856/NextChat/user_uherdj.svg",
+    }
 },{timestamps:true})
 
 

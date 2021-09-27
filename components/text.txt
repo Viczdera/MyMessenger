@@ -1,0 +1,34 @@
+ /*
+
+   
+   
+
+  
+     
+        <BodyHead
+                title={'Inventory'}
+                searchplaceholder={' Search inventory'}
+                setSearchList={(e) => setSearchList(e.target.value)}
+                searchList={searchList}
+            />
+    
+        products
+              .filter((product) => {
+                            if (searchList == '') {
+                                return product;
+                            } else if (product.name.toLowerCase().includes(searchList.toLowerCase())) {
+                                return product;
+                            }
+                        })
+                        .map((product) => {
+                            return (
+                                <Product
+                                    eachID={product._id}
+                                    productName={product.name}
+                                    imgUrl={product.images}
+                                    description={product.description}
+                                />
+                            );
+    
+    
+    */

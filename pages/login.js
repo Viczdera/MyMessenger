@@ -51,9 +51,11 @@ function Login(props) {
       { email: email.current.value, password: password.current.value },
       dispatch
     );
+    
   };
   if (user) {
     Router.push("/");
+   
   }
 
   return (

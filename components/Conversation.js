@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DataContext } from "../context/authContext";
 import { route } from "./AdminMessenger";
+import Image from "next/image";
 
 const ContactDiv = styled.div`
   padding-left: 10px;
@@ -15,6 +16,7 @@ const ContactDiv = styled.div`
     height: 60px;
     cursor: pointer;
     color: #050714;
+
     :hover {
       color: #fff;
       border-bottom-left-radius: 30px;
@@ -31,15 +33,32 @@ const ContactDiv = styled.div`
     border-radius: 50%;
     display: flex;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 4px;
     margin-left: 10px;
+  }
+  .online {
+    background: green;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    margin-right: 10px;
+    line-height: 6px;
+  }
+  .offline {
+    background: red;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    margin-right: 10px;
+    line-height: 6px;
   }
   .convoName {
     font-weight: 500;
   }
 `;
-function Conversation({ convo, currentUser, collapsed, mediaq }) {
+function Conversation({ convo, currentUser, collapsed, mediaq, onlineUsers }) {
   const [user, setUser] = useState(null);
+  const [online, setonline]= useState(null)
 
   useEffect(async () => {
     //filter friend
@@ -55,33 +74,51 @@ function Conversation({ convo, currentUser, collapsed, mediaq }) {
     }
   }, [convo, currentUser]);
 
+  useEffect(()=>{
+    onlineUsers.map((o)=>{
+      if(o.userId===user?._id){
+        setonline(true)
+      }
+    })
+
+  },[])
+
+
+
   return (
     <ContactDiv>
       <div className="wrapper">
         <div className="userPic">
-          <FontAwesomeIcon style={{ margin: " 0 auto" }} icon={faUser} />
+          <img
+            src={`${user?.profpicture}`}
+            width="30px"
+            height="30px"
+            style={{ margin: "0 auto", borderRadius: "15px" }}
+          />
         </div>
-
+        <div
+          className={online? "online" : "offline"}
+        />
         {mediaq ? (
           <>
             {" "}
             {collapsed ? (
-             ""
+              ""
             ) : (
               <span className="convoName" key={convo._id}>
-              {convo ? `${user ? `${user.name}` : "....."}` : ""}
-            </span>
+                {convo ? `${user ? `${user.name}` : "....."}` : ""}
+              </span>
             )}
           </>
         ) : (
           <>
             {" "}
             {collapsed ? (
-               <span className="convoName" key={convo._id}>
-               {convo ? `${user ? `${user.name}` : "....."}` : ""}
-             </span>
+              <span className="convoName" key={convo._id}>
+                {convo ? `${user ? `${user.name}` : "....."}` : ""}
+              </span>
             ) : (
-             ""
+              ""
             )}
           </>
         )}

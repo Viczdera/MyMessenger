@@ -1,4 +1,5 @@
 import axios from "axios"
+import { addToLocalStorage } from "../../utils/browserStorage"
 
 
 export const LoginCall= async(userCred,dispatch)=>{
@@ -8,7 +9,8 @@ export const LoginCall= async(userCred,dispatch)=>{
     try{
         const res= await axios.post("api/login", userCred)
         dispatch ({type:"LOGIN_SUCCESS",payload:res.data})
-        
+       // localStorage.setItem("user",JSON.stringify(res.data))
+        addToLocalStorage("user",res.data)
 
 
     }catch(err){

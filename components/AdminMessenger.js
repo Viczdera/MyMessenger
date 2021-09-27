@@ -20,111 +20,34 @@ import { io } from "socket.io-client";
 
 import appicon1 from "../public/appicon1.svg";
 import { Add, Cancel, Send } from "@material-ui/icons";
+import Searchbar from "./Searchbar";
 
 const ChatBoxNav = styled.div`
   height: 8%;
   width: 100%;
+  display: flex;
+  align-items: center;
   border-radius: 10px;
   background: #589cafff;
-`;
-
-const Messenger = styled.div`
-  height: 100vh;
-  max-height: 100vh;
-  width: 100%;
-  display: flex;
-  overflow-x: scroll;
-  button {
-    border: 0px;
-    cursor: pointer;
-  }
-  .chatbox {
-    background: url("../assets/bkg1.svg");
-    width: 100%;
-    padding: 5px;
-
-    padding-bottom: 20px;
-
-    .chatboxTop {
-      margin-top: 10px;
-      height: 85%;
-      display: flex;
-      flex-direction: column;
-      min-width: 202px;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
-      padding: 20px;
-      padding-bottom: 10px;
-      border-radius: 10px;
-
-      .openChat {
-        text-align: center;
-        color: #ffaf38;
-        font-size: 50px;
-      }
-    }
-    .chatboxBottom {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      form {
-        display: flex;
-        width: 100%;
-        height: 40px;
-        margin-top: 12px;
-      }
-      input,
-      .chatButton {
-        padding: 10px;
-        font-size: 12px;
-        margin: 0px 10px 0px 0px;
-      }
-      input {
-        width: 100%;
-        border-radius:10px;
-      }
-
-      .inputText {
-        height: 10px;
-        background: #fafafa;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        box-sizing: border-box;
-
-        padding: 10px;
-      }
-      .chatButton {
-        background: #050714;
-        cursor: pointer;
-        border: none;
-        color: #fff;
-        display: flex;
-        align-items: center;
-      }
-    }
-  }
-  .chatboxTop {
-    overflow-x: hidden;
-    overflow-y: auto;
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 5px grey;
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #320234;
-      border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 0, 0, 0.38);
-    }
+  position: relative;
+  .userPic {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border: solid;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+    margin-left: 10px;
+    position: absolute;
+    right: 2%;
   }
 `;
 export const route = "api/";
 
 function AdminMessenger() {
-  const { user } = useContext(DataContext);
+  const { user ,dispatch} = useContext(DataContext);
   const [conversations, setconversation] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
 
@@ -139,6 +62,9 @@ function AdminMessenger() {
   //sockets
   const socket = useRef();
   const [RTMessage, setRTMessage] = useState(null);
+
+  //onlineUsers
+  const [onlineUsers, setOnlineUsers]=useState(null)
 
   const scrollRefCurrentM = useRef();
 
@@ -213,7 +139,8 @@ function AdminMessenger() {
   };
   //socket
   useEffect(() => {
-    socket.current = io("https://quiet-cove-52851.herokuapp.com/");
+    // socket.current = io("https://quiet-cove-52851.herokuapp.com/");
+    socket.current = io("http://localhost:8000");
     socket.current.on("getMessage", (d) => {
       setRTMessage({
         sender: d.senderId,
@@ -226,7 +153,9 @@ function AdminMessenger() {
   useEffect(() => {
     socket.current.emit("addUser", user?.data._id);
     socket.current.on("getUsers", (users) => {
-      console.log(users);
+      setOnlineUsers(users)
+      console.log(users)
+      
     });
   }, [user]); //user can change
 
@@ -246,9 +175,15 @@ function AdminMessenger() {
 
   console.log(addNew);
 
+  //signOut
+  const signOut = () => {
+    dispatch({type:"LOGOUT"})
+    localStorage.removeItem("user")
+  };
+
   return (
     <>
-      <Messenger>
+      <div className="messenger">
         <div className="sideMenu">
           <ProSidebar
             className="Prosidebar"
@@ -345,6 +280,7 @@ function AdminMessenger() {
                       currentUser={user.data}
                       collapsed={collapsed}
                       mediaq={mediaq}
+                      onlineUsers={onlineUsers}
                     />
                   </div>
                 );
@@ -397,12 +333,19 @@ function AdminMessenger() {
                   )}
                 </>
               )}
+
+              <div onClick={signOut}>
+                SignOut
+              </div>
             </SidebarFooter>
           </ProSidebar>
         </div>
 
         <div className="chatbox">
-          <ChatBoxNav />
+          <ChatBoxNav>
+            <div className="userPic"></div>
+            <Searchbar convo={conversations} />
+          </ChatBoxNav>
 
           <div className="chatboxTop">
             {activeChat ? (
@@ -443,41 +386,12 @@ function AdminMessenger() {
                 required={true}
               ></input>
               <button onClick={submitMessage} className="chatButton">
-                <Send/>
+                <Send />
               </button>
             </form>
           </div>
         </div>
-
-        {/*<div className="menu">
-          {conversations.map((c) => {
-            return (
-              <div
-                className={onclick ? "convoBtnClicked" : "convoBtn"}
-                onClick={() => {
-                  setLoading(true);
-                  setActiveChat(c);
-                  // message?setLoading(false):""
-                }}
-              >
-                <Conversation convo={c} currentUser={user.data} />
-              </div>
-            );
-          })}
-        </div>
-        
-        
-        
-
-
-
-
-
-        
-        
-        
-        */}
-      </Messenger>
+      </div>
     </>
   );
 }

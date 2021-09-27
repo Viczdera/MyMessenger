@@ -1,5 +1,9 @@
 import { createContext, useReducer } from "react";
+import { getFromLocalStorage } from "../utils/browserStorage";
 import Reducer from "./reducers";
+
+const initialUserString= getFromLocalStorage("user");
+const initialUser=JSON.parse(initialUserString)
 const INITIAL_STATE = {
   user: null,
   isFetching: false,
