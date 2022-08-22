@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import connectDB from "../../utils/connectDB";
 import User from "../../models/User"
 import bcrypt from "bcrypt"
@@ -17,6 +18,16 @@ export default async (req, res) => {
           email: req.body.email,
           password:passHashed,
         });
+        
+        const userExist = await User.findOne({
+          $or: [{ email: email }, { phone: phone }],
+        });
+        if (userExist) {
+          return res
+            .status(400)
+            .json({ error: "Email or Phone number already exists" });
+        }
+
         const user= await regUser.save();
         res.status(200).json({
           success: true,
